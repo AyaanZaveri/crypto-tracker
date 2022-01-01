@@ -9,6 +9,7 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.1.16",
+    "axios": "^0.24.0",
     "chart.js": "3.5.0",
     "color.js": "^1.2.0",
     "next": "latest",
