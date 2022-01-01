@@ -1,15 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaCaretUp, FaCaretDown } from "react-icons/fa";
 import { Line } from "react-chartjs-2";
+import Head from "next/head";
 
 export const Home = () => {
   const [search, setSearch] = useState("");
   const [data, setData] = useState([]);
   const [chartData, setChartData] = useState([]);
   const [currency, setCurrency] = useState("usd");
+  const [chartChange, setChartChange] = useState("30");
 
-  console.log(currency);
+  console.log(
+    `Currency: ${currency.toUpperCase()}\nChart Change: ${chartChange}`
+  );
 
   var config = {
     method: "get",
@@ -23,7 +27,10 @@ export const Home = () => {
     method: "get",
     url: `https://api.coingecko.com/api/v3/coins/${search
       .toLowerCase()
-      .replace(/\s/g, "-")}/market_chart?vs_currency=${currency}&days=14`,
+      .replace(
+        /\s/g,
+        "-"
+      )}/market_chart?vs_currency=${currency}&days=${chartChange}`,
     headers: {},
   };
 
@@ -84,27 +91,44 @@ export const Home = () => {
     }
   };
 
-  const handleChange = (e) => {
+  const handleCurrencyChange = (e) => {
     setCurrency(e.target.value);
   };
 
+  const handleChartChange = (range) => {
+    setChartChange(range);
+  };
+
+  useEffect(() => {
+    getChartData();
+  }, [chartChange]);
+
   return (
     <div className="flex flex-col gap-3 appearance-none">
-      <div className="w-screen flex flex-row md:justify-start justify-center font-bold p-5 border-b text-slate-700">
+      <Head>
+        <title>Crypto Tracker</title>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
+        <meta name="description" content="Crypto Dashboard" />
+      </Head>
+
+      <div className="w-screen flex dark:bg-slate-800 flex-row md:justify-start justify-center font-bold p-5 border-b text-slate-700">
         <form onSubmit={handleSubmit}>
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search..."
-            className="appearance-none shadow-sm text-slate-800 p-2 w-72 ml-2 border rounded-lg hover:bg-slate-50 focus:outline-none transition-colors"
+            className="appearance-none shadow-sm text-slate-800 p-2 w-72 ml-2 border focus:border-slate-500 rounded-lg hover:bg-slate-50 focus:outline-none focus:ring ring-slate-300 active:bg-slate-100 transition"
             autoComplete="off"
           />
         </form>
         <select
-          className="outline-none appearance-none shadow-sm text-slate-800 p-2 ml-2 border rounded-lg hover:bg-slate-50 focus:outline-none transition-colors"
+          className="appearance-none shadow-sm text-slate-800 p-2 ml-2 border focus:border-slate-500 rounded-lg hover:bg-slate-50 focus:outline-none focus:ring ring-slate-300 active:bg-slate-100 transition"
           value={currency}
-          onChange={handleChange}
+          onChange={handleCurrencyChange}
         >
           <option value="usd">USD</option>
           <option value="eur">EUR</option>
@@ -151,7 +175,27 @@ export const Home = () => {
               %
             </span>
           </div>
-          <div className="border p-2 rounded-lg shadow-sm flex justify-center align-middle items-center md:w-1/2 sm:w-full w-full mt-5">
+          <div className="mt-4 flex flex-row">
+            <button
+              onClick={() => handleChartChange("7")}
+              className={`bg-white px-1.5 rounded-l-md border hover:bg-slate-50 ${chartChange == "7" ? "bg-slate-100" : "bg-white"}`}
+            >
+              1W
+            </button>
+            <button
+              onClick={() => handleChartChange("30")}
+              className={`bg-white px-1.5 border-y hover:bg-slate-50 ${chartChange == "30" ? "bg-slate-100" : "bg-white"}`}
+            >
+              1M
+            </button>
+            <button
+              onClick={() => handleChartChange("365")}
+              className={`bg-white px-1.5 rounded-r-md border hover:bg-slate-50 ${chartChange == "365" ? "bg-slate-100" : "bg-white"}`}
+            >
+              1Y
+            </button>
+          </div>
+          <div className="border p-2 rounded-lg shadow-sm flex flex-col justify-center align-middle items-center md:w-1/2 sm:w-full w-full mt-3">
             <Line
               data={{
                 labels: labels,
@@ -193,13 +237,13 @@ export const Home = () => {
                     ),
                     data: dataY,
                     responsive: true,
-                    pointRadius: 0,
+                    pointRadius: 1,
                   },
                 ],
               }}
             />
           </div>
-          <div className="flex flex-col justify-start gap-y-2 mt-5 border shadow-sm p-2 rounded-lg">
+          <div className="flex flex-col justify-start gap-y-2 mt-5 border md:w-1/2 sm:w-full w-full shadow-sm p-2 rounded-lg">
             <div className="flex flex-wrap flex-col gap-y-5 justify-start items-start text-slate-800 rounded-lg">
               <div className="inline-flex flex-wrap gap-y-1 align-middle items-center">
                 <span className="font-semibold">Market Cap:&nbsp;</span>
