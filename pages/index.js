@@ -132,14 +132,14 @@ export const Home = () => {
               className={`inline-flex text-3xl font-bold mt-3 text-slate-800`}
             >
               {currency == "usd"
-                ? data.market_data.current_price.usd
+                ? `$${data.market_data.current_price.usd}`
                 : currency == "eur"
-                ? data.market_data.current_price.eur
+                ? `$${data.market_data.current_price.eur}`
                 : currency == "gbp"
-                ? data.market_data.current_price.gbp
+                ? `$${data.market_data.current_price.gbp}`
                 : currency == "cad"
-                ? data.market_data.current_price.cad
-                : data.market_data.current_price.aud}
+                ? `$${data.market_data.current_price.cad}`
+                : `$${data.market_data.current_price.aud}`}
               {caretValue(
                 data.market_data.price_change_percentage_24h_in_currency.usd
               )}
@@ -152,7 +152,7 @@ export const Home = () => {
               %
             </span>
           </div>
-          <div className="border p-2 rounded-lg shadow-sm flex justify-center items-center md:w-1/2 sm:w-full w-full mt-5">
+          <div className="border p-2 rounded-lg shadow-sm flex justify-center align-middle items-center md:w-1/2 sm:w-full w-full mt-5">
             <Line
               data={{
                 labels: labels,
@@ -199,6 +199,70 @@ export const Home = () => {
                 ],
               }}
             />
+          </div>
+          <div className="flex flex-col justify-start gap-y-2 mt-5 border shadow-sm p-2 rounded-lg">
+            <div className="flex flex-wrap flex-col gap-y-5 justify-start items-start text-slate-800 rounded-lg">
+              <div className="inline-flex flex-wrap gap-y-1 align-middle items-center">
+                <span className="font-semibold">Market Cap:&nbsp;</span>
+                <span className="text-slate-800">
+                  {currency == "usd"
+                    ? `$${data.market_data.market_cap.usd}`
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                    : currency == "eur"
+                    ? `$${data.market_data.market_cap.eur}`
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                    : currency == "gbp"
+                    ? `$${data.market_data.market_cap.gbp}`
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                    : currency == "cad"
+                    ? `$${data.market_data.market_cap.cad}`
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                    : `$${data.market_data.market_cap.aud}`
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                </span>
+                <span className="mb-0.5">
+                  {caretValue(
+                    data.market_data.market_cap_change_percentage_24h
+                  )}
+                </span>
+                <span className="text-sm px-1.5 ring-1 ml-1 ring-slate-200 text-slate-500 rounded dark:ring-slate-600 shadow-sm">
+                  {Math.round(
+                    data.market_data.market_cap_change_percentage_24h * 100
+                  ) / 100}
+                  %
+                </span>
+              </div>
+            </div>
+
+            <div className="inline-flex align-middle items-center">
+              <span className="font-semibold">All Time High:&nbsp;</span>
+              <span className="text-slate-800">
+                {currency == "usd"
+                  ? `$${data.market_data.ath.usd}`
+                      .toString()
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                  : currency == "eur"
+                  ? `$${data.market_data.ath.eur}`
+                      .toString()
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                  : currency == "gbp"
+                  ? `$${data.market_data.ath.gbp}`
+                      .toString()
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                  : currency == "cad"
+                  ? `$${data.market_data.ath.cad}`
+                      .toString()
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                  : `$${data.market_data.ath.aud}`
+                      .toString()
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+              </span>
+            </div>
           </div>
         </div>
       ) : null}
