@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
+import React, { useState } from "react";
 import axios from "axios";
 import { FaCaretUp, FaCaretDown } from "react-icons/fa";
 import { Line } from "react-chartjs-2";
