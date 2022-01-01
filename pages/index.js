@@ -10,7 +10,7 @@ export const Home = () => {
   const [chartData, setChartData] = useState([]);
   const [currency, setCurrency] = useState("usd");
 
-  console.log(currency)
+  console.log(currency);
 
   var config = {
     method: "get",
@@ -61,7 +61,7 @@ export const Home = () => {
     );
   }
 
-  console.log(labels)
+  console.log(labels);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -102,13 +102,17 @@ export const Home = () => {
             autoComplete="off"
           />
         </form>
-          <select className="ml-2 outline-none" value={currency} onChange={handleChange}>
-            <option value="usd">USD</option>
-            <option value="eur">EUR</option>
-            <option value="gbp">GBP</option>
-            <option value="cad">CAD</option>
-            <option value="aud">AUD</option>
-          </select>
+        <select
+          className="outline-none appearance-none shadow-sm text-slate-800 p-2 ml-2 border rounded-lg hover:bg-slate-50 focus:outline-none transition-colors"
+          value={currency}
+          onChange={handleChange}
+        >
+          <option value="usd">USD</option>
+          <option value="eur">EUR</option>
+          <option value="gbp">GBP</option>
+          <option value="cad">CAD</option>
+          <option value="aud">AUD</option>
+        </select>
       </div>
       {data.id ? (
         <div className="p-4 ml-3 rounded-lg flex flex-col md:justify-start md:items-start justify-center items-center">
@@ -127,7 +131,15 @@ export const Home = () => {
             <span
               className={`inline-flex text-3xl font-bold mt-3 text-slate-800`}
             >
-              {currency == "usd" ? data.market_data.current_price.usd : currency == "eur" ? data.market_data.current_price.eur : currency == "gbp" ? data.market_data.current_price.gbp : currency == "cad" ? data.market_data.current_price.cad : data.market_data.current_price.aud}
+              {currency == "usd"
+                ? data.market_data.current_price.usd
+                : currency == "eur"
+                ? data.market_data.current_price.eur
+                : currency == "gbp"
+                ? data.market_data.current_price.gbp
+                : currency == "cad"
+                ? data.market_data.current_price.cad
+                : data.market_data.current_price.aud}
               {caretValue(
                 data.market_data.price_change_percentage_24h_in_currency.usd
               )}
@@ -149,12 +161,36 @@ export const Home = () => {
                     label: `${data.name} (USD) Price`,
                     lineTension: 0.1,
                     backgroundColor: colorValue(
-                      data.market_data.price_change_percentage_24h_in_currency
-                        .usd
+                      currency == "usd"
+                        ? data.market_data
+                            .price_change_percentage_24h_in_currency.usd
+                        : currency == "eur"
+                        ? data.market_data
+                            .price_change_percentage_24h_in_currency.eur
+                        : currency == "gbp"
+                        ? data.market_data
+                            .price_change_percentage_24h_in_currency.gbp
+                        : currency == "cad"
+                        ? data.market_data
+                            .price_change_percentage_24h_in_currency.cad
+                        : data.market_data
+                            .price_change_percentage_24h_in_currency.aud
                     ),
                     borderColor: colorValue(
-                      data.market_data.price_change_percentage_24h_in_currency
-                        .usd
+                      currency == "usd"
+                        ? data.market_data
+                            .price_change_percentage_24h_in_currency.usd
+                        : currency == "eur"
+                        ? data.market_data
+                            .price_change_percentage_24h_in_currency.eur
+                        : currency == "gbp"
+                        ? data.market_data
+                            .price_change_percentage_24h_in_currency.gbp
+                        : currency == "cad"
+                        ? data.market_data
+                            .price_change_percentage_24h_in_currency.cad
+                        : data.market_data
+                            .price_change_percentage_24h_in_currency.aud
                     ),
                     data: dataY,
                     responsive: true,
