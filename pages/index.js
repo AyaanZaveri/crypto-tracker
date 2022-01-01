@@ -1,82 +1,173 @@
-import Head from 'next/head'
+import React, { useEffect, useState } from "react";
+import ReactDOM from "react-dom";
+import axios from "axios";
+import { FaCaretUp, FaCaretDown } from "react-icons/fa";
+import { Line } from "react-chartjs-2";
 
-export default function Home() {
+export const Home = () => {
+  const [search, setSearch] = useState("");
+  const [data, setData] = useState([]);
+  const [chartData, setChartData] = useState([]);
+  const [currency, setCurrency] = useState("usd");
+
+  console.log(currency)
+
+  var config = {
+    method: "get",
+    url: `https://api.coingecko.com/api/v3/coins/${search
+      .toLowerCase()
+      .replace(/\s/g, "-")}`,
+    headers: {},
+  };
+
+  var chartConfig = {
+    method: "get",
+    url: `https://api.coingecko.com/api/v3/coins/${search
+      .toLowerCase()
+      .replace(/\s/g, "-")}/market_chart?vs_currency=${currency}&days=14`,
+    headers: {},
+  };
+
+  const getCryptoData = () => {
+    axios(config)
+      .then(function (response) {
+        setData(response.data);
+      })
+      .catch(function (error) {
+        //console.log(error);
+      });
+  };
+
+  const getChartData = () => {
+    axios(chartConfig)
+      .then(function (response) {
+        setChartData(response.data);
+      })
+      .catch(function (error) {
+        //console.log(error);
+      });
+  };
+
+  const unixToDate = (unix) => {
+    return new Date(unix).toLocaleDateString("en-US");
+  };
+
+  let labels = [];
+  let dataY = [];
+
+  if (chartData.prices) {
+    chartData.prices.map(
+      (item) => labels.push(unixToDate(item[0])) && dataY.push(item[1])
+    );
+  }
+
+  console.log(labels)
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    getCryptoData();
+    getChartData();
+  };
+
+  const colorValue = (value) => {
+    if (value > 0) {
+      return "#10b981";
+    } else if (value < 0) {
+      return "#f43f5e";
+    }
+  };
+
+  const caretValue = (value) => {
+    if (value > 0) {
+      return <FaCaretUp className="text-emerald-500 mt-0.5" />;
+    } else if (value < 0) {
+      return <FaCaretDown className="text-rose-500 mt-0.5" />;
+    }
+  };
+
+  const handleChange = (e) => {
+    setCurrency(e.target.value);
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen py-2">
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center">
-        <h1 className="text-6xl font-bold">
-          Welcome to{' '}
-          <a className="text-blue-600" href="https://nextjs.org">
-            Next.js!
-          </a>
-        </h1>
-
-        <p className="mt-3 text-2xl">
-          Get started by editing{' '}
-          <code className="p-3 font-mono text-lg bg-gray-100 rounded-md">
-            pages/index.js
-          </code>
-        </p>
-
-        <div className="flex flex-wrap items-center justify-around max-w-4xl mt-6 sm:w-full">
-          <a
-            href="https://nextjs.org/docs"
-            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Documentation &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Find in-depth information about Next.js features and API.
-            </p>
-          </a>
-
-          <a
-            href="https://nextjs.org/learn"
-            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Learn &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Learn about Next.js in an interactive course with quizzes!
-            </p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Examples &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Discover and deploy boilerplate example Next.js projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Deploy &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+    <div className="flex flex-col gap-3 appearance-none">
+      <div className="w-screen flex flex-row md:justify-start justify-center font-bold p-5 border-b text-slate-700">
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search..."
+            className="appearance-none shadow-sm text-slate-800 p-2 w-72 ml-2 border rounded-lg hover:bg-slate-50 focus:outline-none transition-colors"
+            autoComplete="off"
+          />
+        </form>
+          <select className="ml-2 outline-none" value={currency} onChange={handleChange}>
+            <option value="usd">USD</option>
+            <option value="eur">EUR</option>
+            <option value="gbp">GBP</option>
+            <option value="cad">CAD</option>
+            <option value="aud">AUD</option>
+          </select>
+      </div>
+      {data.id ? (
+        <div className="p-4 ml-3 rounded-lg flex flex-col md:justify-start md:items-start justify-center items-center">
+          <div className="flex flex-row">
+            <img src={data.image.large} className="w-8 h-8 mt-1 mr-2"></img>
+            <span className="text-4xl font-bold text-slate-800">
+              {data.name}
+            </span>
+            <div className="flex ml-3 align-middle items-center justify-center">
+              <span className="px-1.5 ring-1 ring-slate-200 text-slate-500 rounded dark:ring-slate-600 shadow-sm">
+                {data.symbol.toUpperCase()}
+              </span>
+            </div>
+          </div>
+          <div className="flex align-middle items-center justify-center">
+            <span
+              className={`inline-flex text-3xl font-bold mt-3 text-slate-800`}
+            >
+              {currency == "usd" ? data.market_data.current_price.usd : currency == "eur" ? data.market_data.current_price.eur : currency == "gbp" ? data.market_data.current_price.gbp : currency == "cad" ? data.market_data.current_price.cad : data.market_data.current_price.aud}
+              {caretValue(
+                data.market_data.price_change_percentage_24h_in_currency.usd
+              )}
+            </span>
+            <span className="px-1.5 ring-1 mt-2.5 ml-1 ring-slate-200 text-slate-500 rounded dark:ring-slate-600 shadow-sm">
+              {Math.round(
+                data.market_data.price_change_percentage_24h_in_currency.usd *
+                  100
+              ) / 100}
+              %
+            </span>
+          </div>
+          <div className="border p-2 rounded-lg shadow-sm flex justify-center items-center md:w-1/2 sm:w-full w-full mt-5">
+            <Line
+              data={{
+                labels: labels,
+                datasets: [
+                  {
+                    label: `${data.name} (USD) Price`,
+                    lineTension: 0.1,
+                    backgroundColor: colorValue(
+                      data.market_data.price_change_percentage_24h_in_currency
+                        .usd
+                    ),
+                    borderColor: colorValue(
+                      data.market_data.price_change_percentage_24h_in_currency
+                        .usd
+                    ),
+                    data: dataY,
+                    responsive: true,
+                    pointRadius: 0,
+                  },
+                ],
+              }}
+            />
+          </div>
         </div>
-      </main>
-
-      <footer className="flex items-center justify-center w-full h-24 border-t">
-        <a
-          className="flex items-center justify-center"
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className="h-4 ml-2" />
-        </a>
-      </footer>
+      ) : null}
     </div>
-  )
-}
+  );
+};
+
+export default Home;
