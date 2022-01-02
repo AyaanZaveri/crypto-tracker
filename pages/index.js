@@ -126,7 +126,7 @@ export const Home = () => {
           />
         </form>
         <select
-          className="appearance-none shadow-sm text-slate-800 p-2 ml-2 border focus:border-slate-500 rounded-lg hover:bg-slate-50 focus:outline-none focus:ring ring-slate-300 active:bg-slate-100 transition"
+          className="appearance-none bg-white shadow-sm text-slate-800 p-2 ml-2 border focus:border-slate-500 rounded-lg hover:bg-slate-50 focus:outline-none focus:ring ring-slate-300 active:bg-slate-100 transition"
           value={currency}
           onChange={handleCurrencyChange}
         >
@@ -178,19 +178,25 @@ export const Home = () => {
           <div className="mt-4 flex flex-row">
             <button
               onClick={() => handleChartChange("7")}
-              className={`bg-white px-1.5 rounded-l-md border hover:bg-slate-50 ${chartChange == "7" ? "bg-slate-100" : "bg-white"}`}
+              className={`bg-white px-2 rounded-l-md border hover:bg-slate-50 ${
+                chartChange == "7" ? "bg-slate-100" : "bg-white"
+              }`}
             >
               1W
             </button>
             <button
               onClick={() => handleChartChange("30")}
-              className={`bg-white px-1.5 border-y hover:bg-slate-50 ${chartChange == "30" ? "bg-slate-100" : "bg-white"}`}
+              className={`bg-white px-2 border-y hover:bg-slate-50 ${
+                chartChange == "30" ? "bg-slate-100" : "bg-white"
+              }`}
             >
               1M
             </button>
             <button
               onClick={() => handleChartChange("365")}
-              className={`bg-white px-1.5 rounded-r-md border hover:bg-slate-50 ${chartChange == "365" ? "bg-slate-100" : "bg-white"}`}
+              className={`bg-white px-2 rounded-r-md border hover:bg-slate-50 ${
+                chartChange == "365" ? "bg-slate-100" : "bg-white"
+              }`}
             >
               1Y
             </button>
