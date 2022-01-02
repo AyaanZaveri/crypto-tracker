@@ -3,13 +3,15 @@ import axios from "axios";
 import { FaCaretUp, FaCaretDown } from "react-icons/fa";
 import { Line } from "react-chartjs-2";
 import Head from "next/head";
+import Trending from "../components/Trending";
 
-export const Home = () => {
+export const Home = ({ cryptoName }) => {
   const [search, setSearch] = useState("");
   const [data, setData] = useState([]);
   const [chartData, setChartData] = useState([]);
   const [currency, setCurrency] = useState("usd");
   const [chartChange, setChartChange] = useState("30");
+  const [trendingData, setTrendingData] = useState([]);
 
   console.log(
     `Currency: ${currency.toUpperCase()}\nChart Change: ${chartChange}`
@@ -34,6 +36,12 @@ export const Home = () => {
     headers: {},
   };
 
+  var trendingConfig = {
+    method: "get",
+    url: `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}`,
+    headers: {},
+  };
+
   const getCryptoData = () => {
     axios(config)
       .then(function (response) {
@@ -54,6 +62,20 @@ export const Home = () => {
       });
   };
 
+  const getTrendingData = () => {
+    axios(trendingConfig)
+      .then(function (response) {
+        setTrendingData(response.data);
+      })
+      .catch(function (error) {
+        //console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    getTrendingData();
+  }, []);
+
   const unixToDate = (unix) => {
     return new Date(unix).toLocaleDateString("en-US");
   };
@@ -66,8 +88,6 @@ export const Home = () => {
       (item) => labels.push(unixToDate(item[0])) && dataY.push(item[1])
     );
   }
-
-  console.log(labels);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -114,7 +134,7 @@ export const Home = () => {
         <meta name="description" content="Crypto Dashboard" />
       </Head>
 
-      <div className="w-screen flex dark:bg-slate-800 flex-row md:justify-start justify-center font-bold p-5 border-b text-slate-700">
+      <div className="w-screen flex flex-row md:justify-start justify-center font-bold p-5 border-b text-slate-700">
         <form onSubmit={handleSubmit}>
           <input
             type="text"
@@ -137,6 +157,7 @@ export const Home = () => {
           <option value="aud">AUD</option>
         </select>
       </div>
+      {!data.id ? <Trending trendingData={trendingData} /> : null}
       {data.id ? (
         <div className="p-4 ml-3 rounded-lg flex flex-col md:justify-start md:items-start justify-center items-center">
           <div className="flex flex-row">
@@ -145,7 +166,7 @@ export const Home = () => {
               {data.name}
             </span>
             <div className="flex ml-3 align-middle items-center justify-center">
-              <span className="px-1.5 ring-1 ring-slate-200 text-slate-500 rounded dark:ring-slate-600 shadow-sm">
+              <span className="px-1.5 ring-1 ring-slate-200 text-slate-500 rounded shadow-sm">
                 {data.symbol.toUpperCase()}
               </span>
             </div>
@@ -167,7 +188,7 @@ export const Home = () => {
                 data.market_data.price_change_percentage_24h_in_currency.usd
               )}
             </span>
-            <span className="px-1.5 ring-1 mt-2.5 ml-1 ring-slate-200 text-slate-500 rounded dark:ring-slate-600 shadow-sm">
+            <span className="px-1.5 ring-1 mt-2.5 ml-1 ring-slate-200 text-slate-500 rounded shadow-sm">
               {Math.round(
                 data.market_data.price_change_percentage_24h_in_currency.usd *
                   100
@@ -279,7 +300,7 @@ export const Home = () => {
                     data.market_data.market_cap_change_percentage_24h
                   )}
                 </span>
-                <span className="text-sm px-1.5 ring-1 ml-1 ring-slate-200 text-slate-500 rounded dark:ring-slate-600 shadow-sm">
+                <span className="text-sm px-1.5 ring-1 ml-1 ring-slate-200 text-slate-500 rounded shadow-sm">
                   {Math.round(
                     data.market_data.market_cap_change_percentage_24h * 100
                   ) / 100}
@@ -310,6 +331,13 @@ export const Home = () => {
                   : `$${data.market_data.ath.aud}`
                       .toString()
                       .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+              </span>
+            </div>
+
+            <div className="inline-flex align-middle items-center">
+              <span className="font-semibold">Hashing Algorithm:&nbsp;</span>
+              <span className="text-sm px-1.5 ring-1 ml-1 ring-slate-200 text-slate-800 rounded shadow-sm">
+                {data.hashing_algorithm ? data.hashing_algorithm : "N/A"}
               </span>
             </div>
           </div>
