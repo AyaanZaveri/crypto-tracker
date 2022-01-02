@@ -1,6 +1,7 @@
-https://crypto-tracker-ayaanzaveri08.vercel.app/
+**Crypto Tracker:** https://crypto-tracker-ayaanzaveri08.vercel.app/
+
 # Crypto Tracker
-Crypto Tracker (I'll change the name, don't worry) tracks crypto with the [**CoinGecko API**](https://www.coingecko.com/en/api). This app uses the [**React**](https://reactjs.org/) framework created by **Meta**, and [**Tailwind CSS**](https://tailwindcss.com/) for the UI.
+Crypto Tracker (I'll change the name, don't worry) tracks crypto with the [**CoinGecko API**](https://www.coingecko.com/en/api). This app uses the [**Next.js**](https://nextjs.org/) framework created by [**Vercel**](https://vercel.com/), and [**Tailwind CSS**](https://tailwindcss.com/) for the UI.
 
 ## Currently working on:
 - A Trending Cryptocurrencies Section
